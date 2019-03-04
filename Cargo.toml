@@ -1,0 +1,11 @@
+[package]
+name = "life"
+version = "0.1.0"
+authors = ["Lucas Caro <lucascaro@gmail.com>"]
+
+[dependencies]
+clap = "2.31.2"
+ncurses = "5.91.0"
+# cursive = "0.8.1"
+log = "0.4.1"
+simplelog = "0.5.1"
