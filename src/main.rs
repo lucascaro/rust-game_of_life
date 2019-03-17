@@ -44,7 +44,8 @@ fn main() {
         log_level,
         simplelog::Config::default(),
         File::create("debug.log").unwrap(),
-    ).unwrap();
+    )
+    .unwrap();
     setup_screen();
     let _teardown = Defer { f: teardown_screen };
     debug!("Some code");
@@ -151,7 +152,7 @@ fn setup_screen() -> (usize, usize) {
     let mut max_y = 0;
     getmaxyx(stdscr(), &mut max_y, &mut max_x);
 
-    return (max_x as usize, max_y as usize);
+    (max_x as usize, max_y as usize)
 }
 
 fn teardown_screen() {

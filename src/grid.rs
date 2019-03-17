@@ -1,5 +1,5 @@
-use std::fmt;
 use ncurses::{clear, mvprintw, refresh};
+use std::fmt;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -77,10 +77,7 @@ impl Grid {
                         "({}, {}) = {}",
                         x as i32,
                         y as i32,
-                        match *cell {
-                            true => "1",
-                            _ => "0",
-                        }
+                        if *cell { "1" } else { "0" },
                     );
                     mvprintw(y as i32, x as i32, "0");
                 }
@@ -94,24 +91,22 @@ impl Grid {
         trace!("diff: {:?}", self.cells);
         let prev_state = self.cells.clone();
         let new_cells = prev_state.iter().enumerate().map(|(x, row)| {
-            // debug!("{}", x);
-            let m = row.iter().enumerate().map(|(y, cell)| {
-                match count_live_neighbours(&prev_state, x, y) {
+            row.iter()
+                .enumerate()
+                .map(|(y, cell)| match count_live_neighbours(&prev_state, x, y) {
                     0 | 1 => false,
                     2 => *cell,
                     3 => true,
                     _ => false,
-                }
-            });
-            let coll: Vec<bool> = m.collect();
-            return coll;
+                })
+                .collect()
         });
         self.cells = new_cells.collect();
         trace!("diff: {:?}", self.cells);
     }
 }
 
-fn count_live_neighbours(state: &Vec<Vec<bool>>, x: usize, y: usize) -> usize {
+fn count_live_neighbours(state: &[Vec<bool>], x: usize, y: usize) -> usize {
     let mut n = 0;
     let xx: i32 = x as i32;
     let yy: i32 = y as i32;
@@ -131,7 +126,7 @@ fn count_live_neighbours(state: &Vec<Vec<bool>>, x: usize, y: usize) -> usize {
     if n > 0 {
         trace!("Neighbours: {}", n);
     }
-    return n;
+    n
 }
 
 impl fmt::Display for Grid {
@@ -139,14 +134,7 @@ impl fmt::Display for Grid {
         let mut out = String::new();
         for (_x, row) in self.cells.iter().enumerate() {
             for (_y, cell) in row.iter().enumerate() {
-                out = format!(
-                    "{}{}",
-                    out,
-                    match *cell {
-                        true => "1",
-                        _ => "0",
-                    }
-                );
+                out = format!("{}{}", out, if *cell { "1" } else { "0" },);
             }
             out = format!("{}\n", out,);
         }
